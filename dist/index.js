@@ -6897,21 +6897,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 const qusly_core_1 = __webpack_require__(105);
+const url_1 = __webpack_require__(835);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const host = core.getInput('host');
+            const url = new url_1.URL(core.getInput('host'));
             const user = core.getInput('user');
             const password = core.getInput('password');
-            // const protocol: string = core.getInput('protocol')
+            const localPath = core.getInput('local_path');
+            core.debug(`Protocol: ${url.protocol}`);
+            core.debug(`Target Path: ${url.pathname}`);
+            core.debug(`Local Path: ${localPath}`);
             const client = new qusly_core_1.Client();
             yield client.connect({
-                host,
+                host: url.hostname,
                 user,
                 password,
                 protocol: 'sftp'
             });
-            const files = yield client.readDir('/www');
+            const path = url.pathname;
+            const files = yield client.readDir(path);
             core.info(new Date().toTimeString());
             core.info(`${files.length} Files`);
             for (const file of files) {
@@ -23207,6 +23212,13 @@ exports.BUGGY_IMPLS = [
 exports.EDDSA_SUPPORTED = eddsaSupported;
 exports.CURVE25519_SUPPORTED = curve25519Supported;
 
+
+/***/ }),
+
+/***/ 835:
+/***/ (function(module) {
+
+module.exports = require("url");
 
 /***/ }),
 
