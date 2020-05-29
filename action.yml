@@ -11,6 +11,9 @@ inputs:
   password:              # change this
     description: 'input description here'
     default: 'default value if applicable'
+  local_path:              # change this
+    description: 'input description here'
+    default: 'default value if applicable'
 runs:
   using: 'node12'
   main: 'dist/index.js'

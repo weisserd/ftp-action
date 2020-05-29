@@ -6898,6 +6898,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 const qusly_core_1 = __webpack_require__(105);
 const url_1 = __webpack_require__(835);
+const fs_1 = __webpack_require__(747);
+const path = __importStar(__webpack_require__(622));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -6905,7 +6907,16 @@ function run() {
             const user = core.getInput('user');
             const password = core.getInput('password');
             const localPath = core.getInput('local_path');
-            core.debug(`Protocol: ${url.protocol}`);
+            let protocol = `sftp`;
+            switch (url.protocol.slice(0, -1)) {
+                case 'sftp':
+                    protocol = `sftp`;
+                    break;
+                case 'ftp':
+                    protocol = `ftp`;
+                    break;
+            }
+            core.debug(`Protocol: ${url.protocol.slice(0, -1)}`);
             core.debug(`Target Path: ${url.pathname}`);
             core.debug(`Local Path: ${localPath}`);
             const client = new qusly_core_1.Client();
@@ -6913,10 +6924,12 @@ function run() {
                 host: url.hostname,
                 user,
                 password,
-                protocol: 'sftp'
+                protocol
             });
-            const path = url.pathname;
-            const files = yield client.readDir(path);
+            const destPath = url.pathname;
+            const srcFolders = [];
+            getAllSubFolders(localPath, srcFolders);
+            const files = yield client.readDir(destPath);
             core.info(new Date().toTimeString());
             core.info(`${files.length} Files`);
             for (const file of files) {
@@ -6928,6 +6941,13 @@ function run() {
             core.setFailed(error.message);
         }
     });
+}
+function getAllSubFolders(baseFolder, folderList) {
+    const folders = fs_1.readdirSync(baseFolder).filter(file => fs_1.statSync(path.join(baseFolder, file)).isDirectory());
+    for (const folder of folders) {
+        folderList.push(path.join(baseFolder, folder));
+        getAllSubFolders(path.join(baseFolder, folder), folderList);
+    }
 }
 run();
 
