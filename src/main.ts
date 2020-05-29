@@ -17,7 +17,7 @@ async function run(): Promise<void> {
     protocol: 'sftp'
   })
 
-  const files = await client.readDir('/test')
+  const files = await client.readDir('/www')
   core.info(new Date().toTimeString())
   core.info(files.toString())
   core.info(new Date().toTimeString())
