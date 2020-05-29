@@ -6926,14 +6926,13 @@ function run() {
                 password,
                 protocol
             });
-            const destPath = url.pathname;
+            // const destPath = url.pathname
             const srcFolders = [];
             getAllSubFolders(localPath, srcFolders);
-            const files = yield client.readDir(destPath);
-            core.info(new Date().toTimeString());
-            core.info(`${files.length} Files`);
-            for (const file of files) {
-                core.info(`Name: ${file.name}`);
+            // const files = await client.readDir(destPath)
+            core.info(`${srcFolders.length} Files`);
+            for (const file of srcFolders) {
+                core.info(`Name: ${file}`);
             }
             yield client.disconnect();
         }
