@@ -6929,6 +6929,7 @@ function run() {
             const destPath = url.pathname;
             const srcFolders = [];
             getAllSubFolders(localPath, srcFolders);
+            // Delete old data
             const exists = yield client.exists(destPath);
             if (exists) {
                 yield client.delete(destPath);
@@ -6941,8 +6942,9 @@ function run() {
                 // List files
                 for (const srcFile of fs_1.readdirSync(srcFolder).filter(name => fs_1.statSync(path.join(srcFolder, name)).isFile())) {
                     core.info(`${srcFile} source file`);
-                    //const remotePath = '/documents/new file.txt';
-                    //const status = await client.upload(remotePath, createReadStream(localPath));
+                    const localFilePath = path.join(srcFolder, srcFile);
+                    const remoteFilePath = path.join(newRemoteDir, srcFile);
+                    yield client.upload(remoteFilePath, fs_1.createReadStream(localFilePath));
                 }
             }
             yield client.disconnect();

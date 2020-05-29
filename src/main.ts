@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import {Client, IProtocol} from 'qusly-core'
 import {URL} from 'url'
-import {readdirSync, statSync} from 'fs'
+import {readdirSync, statSync, createReadStream} from 'fs'
 import * as path from 'path'
 
 async function run(): Promise<void> {
@@ -37,6 +37,7 @@ async function run(): Promise<void> {
     const srcFolders: string[] = []
     getAllSubFolders(localPath, srcFolders)
 
+    // Delete old data
     const exists = await client.exists(destPath)
     if (exists) {
       await client.delete(destPath)
@@ -52,9 +53,9 @@ async function run(): Promise<void> {
         statSync(path.join(srcFolder, name)).isFile()
       )) {
         core.info(`${srcFile} source file`)
-        //const remotePath = '/documents/new file.txt';
-
-        //const status = await client.upload(remotePath, createReadStream(localPath));
+        const localFilePath = path.join(srcFolder, srcFile)
+        const remoteFilePath = path.join(newRemoteDir, srcFile)
+        await client.upload(remoteFilePath, createReadStream(localFilePath))
       }
     }
     await client.disconnect()
