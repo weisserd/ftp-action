@@ -1,8 +1,7 @@
 {
-  "name": "typescript-action",
-  "version": "0.0.0",
-  "private": true,
-  "description": "TypeScript template action",
+  "name": "ftp-upload-action",
+  "version": "1.0.0",
+  "description": "Upload files to an (S)FTP server using GitHub actions",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -15,14 +14,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://https://github.com/weisserd/ftp-action.git"
   },
   "keywords": [
     "actions",
-    "node",
-    "setup"
+    "upload",
+    "ftp",
+    "sftp"
   ],
-  "author": "YourNameOrOrganization",
+  "author": "Daniel Weisser",
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.2.4",

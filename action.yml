@@ -1,19 +1,18 @@
-aname: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'FTP Upload'
+description: 'Upload files to an (S)FTP server using GitHub actions'
+author: 'Daniel Weisser'
+branding:
+  icon: 'upload-cloud'
+  color: '#1CD1E3'
 inputs:
-  host:              # change this
-    description: 'input description here'
-    default: 'default value if applicable'
-  user:              # change this
-    description: 'input description here'
-    default: 'default value if applicable'
-  password:              # change this
-    description: 'input description here'
-    default: 'default value if applicable'
-  local_path:              # change this
-    description: 'input description here'
-    default: 'default value if applicable'
+  host:  
+    description: 'Host name'
+  user:      
+    description: 'Username'
+  password:  
+    description: 'Password'
+  local_path:        
+    description: 'Local folder'
 runs:
   using: 'node12'
   main: 'dist/index.js'
