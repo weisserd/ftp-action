@@ -6892,7 +6892,6 @@ function run() {
             const user = core.getInput('user');
             const password = core.getInput('password');
             // const protocol: string = core.getInput('protocol')
-            core.info(new Date().toTimeString());
             const client = new qusly_core_1.Client();
             yield client.connect({
                 host,
@@ -6906,7 +6905,6 @@ function run() {
             for (const file of files) {
                 core.info(`Name: ${file.name}`);
             }
-            core.info(new Date().toTimeString());
             yield client.disconnect();
         }
         catch (error) {
@@ -6914,19 +6912,6 @@ function run() {
         }
     });
 }
-// import {wait} from './wait'
-// async function run(): Promise<void> {
-//   try {
-//     const ms: string = core.getInput('milliseconds')
-//     core.debug(`Waiting ${ms} milliseconds ...`)
-//     core.debug(new Date().toTimeString())
-//     await wait(parseInt(ms, 10))
-//     core.debug(new Date().toTimeString())
-//     core.setOutput('time', new Date().toTimeString())
-//   } catch (error) {
-//     core.setFailed(error.message)
-//   }
-// }
 run();
 
 
