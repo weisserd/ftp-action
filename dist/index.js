@@ -6887,23 +6887,31 @@ const core = __importStar(__webpack_require__(470));
 const qusly_core_1 = __webpack_require__(105);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        const host = core.getInput('host');
-        const user = core.getInput('user');
-        const password = core.getInput('password');
-        // const protocol: string = core.getInput('protocol')
-        core.debug(new Date().toTimeString());
-        const client = new qusly_core_1.Client();
-        yield client.connect({
-            host,
-            user,
-            password,
-            protocol: 'sftp'
-        });
-        const files = yield client.readDir('/test');
-        core.debug(new Date().toTimeString());
-        core.debug(files.toString());
-        core.debug(new Date().toTimeString());
-        yield client.disconnect();
+        try {
+            const host = core.getInput('host');
+            const user = core.getInput('user');
+            const password = core.getInput('password');
+            // const protocol: string = core.getInput('protocol')
+            core.info(new Date().toTimeString());
+            const client = new qusly_core_1.Client();
+            yield client.connect({
+                host,
+                user,
+                password,
+                protocol: 'sftp'
+            });
+            const files = yield client.readDir('/www');
+            core.info(new Date().toTimeString());
+            core.info(`${files.length} Files`);
+            for (const file of files) {
+                core.info(`Name: ${file.name}`);
+            }
+            core.info(new Date().toTimeString());
+            yield client.disconnect();
+        }
+        catch (error) {
+            core.setFailed(error.message);
+        }
     });
 }
 // import {wait} from './wait'

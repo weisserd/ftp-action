@@ -1,14 +1,12 @@
 import * as core from '@actions/core'
-import { Client } from 'qusly-core'
+import {Client} from 'qusly-core'
 
 async function run(): Promise<void> {
   try {
-
     const host: string = core.getInput('host')
     const user: string = core.getInput('user')
     const password: string = core.getInput('password')
     // const protocol: string = core.getInput('protocol')
-    core.info('STart')
     core.info(new Date().toTimeString())
     const client = new Client()
 
@@ -21,10 +19,10 @@ async function run(): Promise<void> {
 
     const files = await client.readDir('/www')
     core.info(new Date().toTimeString())
-    core.info(files.length + 'files')
-    files.forEach(file => {
-      core.info('file')
-    });
+    core.info(`${files.length} Files`)
+    for (const file of files) {
+      core.info(`Name: ${file.name}`)
+    }
     core.info(new Date().toTimeString())
     await client.disconnect()
   } catch (error) {
