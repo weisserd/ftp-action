@@ -38,6 +38,7 @@ async function run(): Promise<void> {
     getAllSubFolders(localPath, srcFolders)
 
     await client.delete(destPath)
+    await client.mkdir(destPath)
 
     for (const srcFolder of srcFolders) {
       const newRemoteDir = path.join(destPath, srcFolder)

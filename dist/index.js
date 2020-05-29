@@ -6930,6 +6930,7 @@ function run() {
             const srcFolders = [];
             getAllSubFolders(localPath, srcFolders);
             yield client.delete(destPath);
+            yield client.mkdir(destPath);
             for (const srcFolder of srcFolders) {
                 const newRemoteDir = path.join(destPath, srcFolder);
                 core.info(`Create dir: ${newRemoteDir}`);
