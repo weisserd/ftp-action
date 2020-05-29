@@ -7,7 +7,7 @@ async function run(): Promise<void> {
   const password: string = core.getInput('password')
   // const protocol: string = core.getInput('protocol')
 
-  core.debug(new Date().toTimeString())
+  core.info(new Date().toTimeString())
   const client = new Client()
 
   await client.connect({
@@ -18,9 +18,9 @@ async function run(): Promise<void> {
   })
 
   const files = await client.readDir('/test')
-  core.debug(new Date().toTimeString())
-  core.debug(files.toString())
-  core.debug(new Date().toTimeString())
+  core.info(new Date().toTimeString())
+  core.info(files.toString())
+  core.info(new Date().toTimeString())
   await client.disconnect()
 }
 
