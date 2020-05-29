@@ -33,7 +33,7 @@ async function run(): Promise<void> {
       protocol
     })
 
-    // const destPath = url.pathname
+    const destPath = url.pathname
     const srcFolders: string[] = []
     getAllSubFolders(localPath, srcFolders)
 
@@ -41,6 +41,7 @@ async function run(): Promise<void> {
     core.info(`${srcFolders.length} Files`)
     for (const file of srcFolders) {
       core.info(`Name: ${file}`)
+      await client.mkdir(path.join(destPath, file))
     }
     await client.disconnect()
   } catch (error) {
