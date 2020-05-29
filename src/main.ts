@@ -8,7 +8,7 @@ async function run(): Promise<void> {
     const user: string = core.getInput('user')
     const password: string = core.getInput('password')
     // const protocol: string = core.getInput('protocol')
-
+    core.info('STart')
     core.info(new Date().toTimeString())
     const client = new Client()
 
