@@ -6932,10 +6932,14 @@ function run() {
             // const files = await client.readDir(destPath)
             core.info(`${srcFolders.length} Files`);
             for (const file of srcFolders) {
-                core.info(`Create dir: ${file}`);
                 const newLocal = path.join(destPath, file);
                 core.info(`Create dir comp: ${newLocal}`);
                 yield client.mkdir(newLocal);
+                // List files
+                for (const srcFile of fs_1.readdirSync(newLocal)
+                    .filter(name => fs_1.statSync(path.join(newLocal, name)).isFile())) {
+                    core.info(`${srcFile} source file`);
+                }
             }
             yield client.disconnect();
         }
