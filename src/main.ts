@@ -1,27 +1,35 @@
 import * as core from '@actions/core'
-import {Client} from 'qusly-core'
+import { Client } from 'qusly-core'
 
 async function run(): Promise<void> {
-  const host: string = core.getInput('host')
-  const user: string = core.getInput('user')
-  const password: string = core.getInput('password')
-  // const protocol: string = core.getInput('protocol')
+  try {
 
-  core.info(new Date().toTimeString())
-  const client = new Client()
+    const host: string = core.getInput('host')
+    const user: string = core.getInput('user')
+    const password: string = core.getInput('password')
+    // const protocol: string = core.getInput('protocol')
 
-  await client.connect({
-    host,
-    user,
-    password,
-    protocol: 'sftp'
-  })
+    core.info(new Date().toTimeString())
+    const client = new Client()
 
-  const files = await client.readDir('/www')
-  core.info(new Date().toTimeString())
-  core.info(files.toString())
-  core.info(new Date().toTimeString())
-  await client.disconnect()
+    await client.connect({
+      host,
+      user,
+      password,
+      protocol: 'sftp'
+    })
+
+    const files = await client.readDir('/www')
+    core.info(new Date().toTimeString())
+    core.info(files.length + 'files')
+    files.forEach(file => {
+      core.info('file')
+    });
+    core.info(new Date().toTimeString())
+    await client.disconnect()
+  } catch (error) {
+    core.setFailed(error.message)
+  }
 }
 
 // import {wait} from './wait'
