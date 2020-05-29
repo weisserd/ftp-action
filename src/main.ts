@@ -37,18 +37,20 @@ async function run(): Promise<void> {
     const srcFolders: string[] = []
     getAllSubFolders(localPath, srcFolders)
 
-    // const files = await client.readDir(destPath)
-    core.info(`${srcFolders.length} Files`)
-    for (const file of srcFolders) {
-      const newLocal = path.join(destPath, file)
-      core.info(`Create dir comp: ${newLocal}`)
-      await client.mkdir(newLocal)
-      // List files
+    await client.delete(destPath)
 
-      for (const srcFile of readdirSync(newLocal).filter(name =>
-        statSync(path.join(newLocal, name)).isFile()
+    for (const srcFolder of srcFolders) {
+      const newRemoteDir = path.join(destPath, srcFolder)
+      core.info(`Create dir: ${newRemoteDir}`)
+      await client.mkdir(newRemoteDir)
+      // List files
+      for (const srcFile of readdirSync(srcFolder).filter(name =>
+        statSync(path.join(srcFolder, name)).isFile()
       )) {
         core.info(`${srcFile} source file`)
+        //const remotePath = '/documents/new file.txt';
+
+        //const status = await client.upload(remotePath, createReadStream(localPath));
       }
     }
     await client.disconnect()

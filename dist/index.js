@@ -6929,16 +6929,16 @@ function run() {
             const destPath = url.pathname;
             const srcFolders = [];
             getAllSubFolders(localPath, srcFolders);
-            // const files = await client.readDir(destPath)
-            core.info(`${srcFolders.length} Files`);
-            for (const file of srcFolders) {
-                const newLocal = path.join(destPath, file);
-                core.info(`Create dir comp: ${newLocal}`);
-                yield client.mkdir(newLocal);
+            yield client.delete(destPath);
+            for (const srcFolder of srcFolders) {
+                const newRemoteDir = path.join(destPath, srcFolder);
+                core.info(`Create dir: ${newRemoteDir}`);
+                yield client.mkdir(newRemoteDir);
                 // List files
-                for (const srcFile of fs_1.readdirSync(newLocal)
-                    .filter(name => fs_1.statSync(path.join(newLocal, name)).isFile())) {
+                for (const srcFile of fs_1.readdirSync(srcFolder).filter(name => fs_1.statSync(path.join(srcFolder, name)).isFile())) {
                     core.info(`${srcFile} source file`);
+                    //const remotePath = '/documents/new file.txt';
+                    //const status = await client.upload(remotePath, createReadStream(localPath));
                 }
             }
             yield client.disconnect();
