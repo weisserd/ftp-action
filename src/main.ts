@@ -40,8 +40,10 @@ async function run(): Promise<void> {
     // const files = await client.readDir(destPath)
     core.info(`${srcFolders.length} Files`)
     for (const file of srcFolders) {
-      core.info(`Name: ${file}`)
-      await client.mkdir(path.join(destPath, file))
+      core.info(`Create dir: ${file}`)
+      const newLocal = path.join(destPath, file)
+      core.info(`Create dir comp: ${newLocal}`)
+      await client.mkdir(newLocal)
     }
     await client.disconnect()
   } catch (error) {
