@@ -37,7 +37,10 @@ async function run(): Promise<void> {
     const srcFolders: string[] = []
     getAllSubFolders(localPath, srcFolders)
 
-    await client.delete(destPath)
+    const exists = await client.exists(destPath)
+    if (exists) {
+      await client.delete(destPath)
+    }
     await client.mkdir(destPath)
 
     for (const srcFolder of srcFolders) {

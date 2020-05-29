@@ -6929,7 +6929,10 @@ function run() {
             const destPath = url.pathname;
             const srcFolders = [];
             getAllSubFolders(localPath, srcFolders);
-            yield client.delete(destPath);
+            const exists = yield client.exists(destPath);
+            if (exists) {
+                yield client.delete(destPath);
+            }
             yield client.mkdir(destPath);
             for (const srcFolder of srcFolders) {
                 const newRemoteDir = path.join(destPath, srcFolder);
