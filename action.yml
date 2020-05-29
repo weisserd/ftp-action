@@ -2,7 +2,13 @@ aname: 'Your name here'
 description: 'Provide a description here'
 author: 'Your name or organization here'
 inputs:
-  myInput:              # change this
+  host:              # change this
+    description: 'input description here'
+    default: 'default value if applicable'
+  user:              # change this
+    description: 'input description here'
+    default: 'default value if applicable'
+  password:              # change this
     description: 'input description here'
     default: 'default value if applicable'
 runs:

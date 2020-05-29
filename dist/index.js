@@ -6891,6 +6891,7 @@ function run() {
         const user = core.getInput('user');
         const password = core.getInput('password');
         // const protocol: string = core.getInput('protocol')
+        core.debug(new Date().toTimeString());
         const client = new qusly_core_1.Client();
         yield client.connect({
             host,
@@ -6899,7 +6900,9 @@ function run() {
             protocol: 'sftp'
         });
         const files = yield client.readDir('/test');
+        core.debug(new Date().toTimeString());
         core.debug(files.toString());
+        core.debug(new Date().toTimeString());
         yield client.disconnect();
     });
 }
