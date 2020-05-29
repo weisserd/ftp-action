@@ -11,7 +11,6 @@ async function run(): Promise<void> {
     const password: string = core.getInput('password')
     const localPath: string = core.getInput('local_path')
     let protocol: IProtocol = `sftp`
-
     switch (url.protocol.slice(0, -1)) {
       case 'sftp':
         protocol = `sftp`
@@ -21,10 +20,6 @@ async function run(): Promise<void> {
         break
     }
 
-    core.debug(`Protocol: ${url.protocol.slice(0, -1)}`)
-    core.debug(`Target Path: ${url.pathname}`)
-    core.debug(`Local Path: ${localPath}`)
-
     const client = new Client()
     await client.connect({
       host: url.hostname,
@@ -33,29 +28,30 @@ async function run(): Promise<void> {
       protocol
     })
 
-    const destPath = url.pathname
     const srcFolders: string[] = []
     getAllSubFolders(localPath, srcFolders)
 
-    // Delete old data
-    const exists = await client.exists(destPath)
+    core.debug(`Delete old folder: ${url.pathname}`)
+    const exists = await client.exists(url.pathname)
     if (exists) {
-      await client.delete(destPath)
+      await client.delete(url.pathname)
     }
-    await client.mkdir(destPath)
+    await client.mkdir(url.pathname)
 
     for (const srcFolder of srcFolders) {
-      const newRemoteDir = path.join(destPath, srcFolder)
-      core.info(`Create dir: ${newRemoteDir}`)
+      const newRemoteDir = path.join(url.pathname, srcFolder)
+      core.debug(`Create new folder: ${newRemoteDir}`)
       await client.mkdir(newRemoteDir)
-      // List files
+
+      // Copy files
       for (const srcFile of readdirSync(srcFolder).filter(name =>
         statSync(path.join(srcFolder, name)).isFile()
       )) {
-        core.info(`${srcFile} source file`)
-        const localFilePath = path.join(srcFolder, srcFile)
-        const remoteFilePath = path.join(newRemoteDir, srcFile)
-        await client.upload(remoteFilePath, createReadStream(localFilePath))
+        core.debug(`Copy file: ${srcFile}`)
+        await client.upload(
+          path.join(newRemoteDir, srcFile),
+          createReadStream(path.join(srcFolder, srcFile))
+        )
       }
     }
     await client.disconnect()

@@ -6916,9 +6916,6 @@ function run() {
                     protocol = `ftp`;
                     break;
             }
-            core.debug(`Protocol: ${url.protocol.slice(0, -1)}`);
-            core.debug(`Target Path: ${url.pathname}`);
-            core.debug(`Local Path: ${localPath}`);
             const client = new qusly_core_1.Client();
             yield client.connect({
                 host: url.hostname,
@@ -6926,25 +6923,22 @@ function run() {
                 password,
                 protocol
             });
-            const destPath = url.pathname;
             const srcFolders = [];
             getAllSubFolders(localPath, srcFolders);
-            // Delete old data
-            const exists = yield client.exists(destPath);
+            core.debug(`Delete old folder: ${url.pathname}`);
+            const exists = yield client.exists(url.pathname);
             if (exists) {
-                yield client.delete(destPath);
+                yield client.delete(url.pathname);
             }
-            yield client.mkdir(destPath);
+            yield client.mkdir(url.pathname);
             for (const srcFolder of srcFolders) {
-                const newRemoteDir = path.join(destPath, srcFolder);
-                core.info(`Create dir: ${newRemoteDir}`);
+                const newRemoteDir = path.join(url.pathname, srcFolder);
+                core.debug(`Create new folder: ${newRemoteDir}`);
                 yield client.mkdir(newRemoteDir);
-                // List files
+                // Copy files
                 for (const srcFile of fs_1.readdirSync(srcFolder).filter(name => fs_1.statSync(path.join(srcFolder, name)).isFile())) {
-                    core.info(`${srcFile} source file`);
-                    const localFilePath = path.join(srcFolder, srcFile);
-                    const remoteFilePath = path.join(newRemoteDir, srcFile);
-                    yield client.upload(remoteFilePath, fs_1.createReadStream(localFilePath));
+                    core.debug(`Copy file: ${srcFile}`);
+                    yield client.upload(path.join(newRemoteDir, srcFile), fs_1.createReadStream(path.join(srcFolder, srcFile)));
                 }
             }
             yield client.disconnect();
