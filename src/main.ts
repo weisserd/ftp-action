@@ -5,14 +5,14 @@ async function run(): Promise<void> {
   const host: string = core.getInput('host')
   const user: string = core.getInput('user')
   const password: string = core.getInput('password')
-  const protocol: string = core.getInput('protocol')
+  // const protocol: string = core.getInput('protocol')
 
   const client = new Client()
 
   await client.connect({
-    host: 'www.example.com',
-    user: 'root',
-    password: 'password',
+    host,
+    user,
+    password,
     protocol: 'sftp'
   })
 

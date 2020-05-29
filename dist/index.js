@@ -6885,16 +6885,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 const qusly_core_1 = __webpack_require__(105);
-function init() {
+function run() {
     return __awaiter(this, void 0, void 0, function* () {
+        const host = core.getInput('host');
+        const user = core.getInput('user');
+        const password = core.getInput('password');
+        // const protocol: string = core.getInput('protocol')
         const client = new qusly_core_1.Client();
         yield client.connect({
-            host: 'www.example.com',
-            user: 'root',
-            password: 'password',
+            host,
+            user,
+            password,
             protocol: 'sftp'
         });
-        const files = yield client.readDir('/documents');
+        const files = yield client.readDir('/test');
         core.debug(files.toString());
         yield client.disconnect();
     });
@@ -6912,7 +6916,7 @@ function init() {
 //     core.setFailed(error.message)
 //   }
 // }
-init();
+run();
 
 
 /***/ }),
