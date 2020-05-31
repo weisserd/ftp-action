@@ -6930,7 +6930,7 @@ function run() {
             }
             yield client.mkdir(url.pathname);
             core.debug(`Base dir created: ${url.pathname}`);
-            copyFilesRecursively(localPath, url.pathname, client);
+            yield copyFilesRecursively(localPath, url.pathname, client);
             yield client.disconnect();
         }
         catch (error) {

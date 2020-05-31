@@ -36,7 +36,7 @@ async function run(): Promise<void> {
     await client.mkdir(url.pathname)
     core.debug(`Base dir created: ${url.pathname}`)
 
-    copyFilesRecursively(localPath, url.pathname, client)
+    await copyFilesRecursively(localPath, url.pathname, client)
 
     await client.disconnect()
   } catch (error) {
