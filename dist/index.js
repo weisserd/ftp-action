@@ -6949,8 +6949,13 @@ function copyFilesRecursively(localPath, targetPath, client) {
                 copyFilesRecursively(curSource, curTarget, client);
             }
             else {
-                core.debug(`Copy file: ${curSource} -> ${curTarget}`);
-                yield client.upload(curTarget, fs_1.createReadStream(curSource));
+                try {
+                    core.debug(`Copy file: ${curSource} -> ${curTarget}`);
+                    yield client.upload(curTarget, fs_1.createReadStream(curSource));
+                }
+                catch (error) {
+                    core.error(error.message);
+                }
             }
         }
     });

@@ -57,8 +57,12 @@ async function copyFilesRecursively(
       await client.mkdir(curTarget)
       copyFilesRecursively(curSource, curTarget, client)
     } else {
-      core.debug(`Copy file: ${curSource} -> ${curTarget}`)
-      await client.upload(curTarget, createReadStream(curSource))
+      try {
+        core.debug(`Copy file: ${curSource} -> ${curTarget}`)
+        await client.upload(curTarget, createReadStream(curSource))
+      } catch (error) {
+        core.error(error.message)
+      }
     }
   }
 }
