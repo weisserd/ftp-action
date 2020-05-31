@@ -28,16 +28,13 @@ async function run(): Promise<void> {
       protocol
     })
 
-    core.debug(`Delete old folder: ${url.pathname}`)
-    const exists = await client.exists(url.pathname)
-    if (exists) {
+    core.debug(`Recreate base folder: ${url.pathname}`)
+    if (await client.exists(url.pathname)) {
       await client.delete(url.pathname)
     }
     await client.mkdir(url.pathname)
-    core.debug(`Base dir created: ${url.pathname}`)
 
     await copyFilesRecursively(localPath, url.pathname, client)
-
     await client.disconnect()
   } catch (error) {
     core.setFailed(error.message)
@@ -53,7 +50,7 @@ async function copyFilesRecursively(
     const curSource = path.join(localPath, srcEntry)
     const curTarget = path.join(targetPath, srcEntry)
     if (statSync(curSource).isDirectory()) {
-      core.debug(`Create dir and go into dir: ${curSource}/${curTarget}`)
+      core.debug(`Create dir and go into dir: ${curSource}`)
       await client.mkdir(curTarget)
       copyFilesRecursively(curSource, curTarget, client)
     } else {

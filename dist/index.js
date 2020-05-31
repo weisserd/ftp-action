@@ -6923,13 +6923,11 @@ function run() {
                 password,
                 protocol
             });
-            core.debug(`Delete old folder: ${url.pathname}`);
-            const exists = yield client.exists(url.pathname);
-            if (exists) {
+            core.debug(`Recreate base folder: ${url.pathname}`);
+            if (yield client.exists(url.pathname)) {
                 yield client.delete(url.pathname);
             }
             yield client.mkdir(url.pathname);
-            core.debug(`Base dir created: ${url.pathname}`);
             yield copyFilesRecursively(localPath, url.pathname, client);
             yield client.disconnect();
         }
@@ -6944,7 +6942,7 @@ function copyFilesRecursively(localPath, targetPath, client) {
             const curSource = path.join(localPath, srcEntry);
             const curTarget = path.join(targetPath, srcEntry);
             if (fs_1.statSync(curSource).isDirectory()) {
-                core.debug(`Create dir and go into dir: ${curSource}/${curTarget}`);
+                core.debug(`Create dir and go into dir: ${curSource}`);
                 yield client.mkdir(curTarget);
                 copyFilesRecursively(curSource, curTarget, client);
             }
