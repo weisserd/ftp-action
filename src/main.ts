@@ -39,7 +39,10 @@ async function run(): Promise<void> {
     await client.mkdir(url.pathname)
 
     for (const srcFolder of srcFolders) {
-      const newRemoteDir = path.join(url.pathname, path.relative(localPath, srcFolder))
+      const newRemoteDir = path.join(
+        url.pathname,
+        path.relative(localPath, srcFolder)
+      )
       core.debug(`Create new folder: ${newRemoteDir}`)
       await client.mkdir(newRemoteDir)
 
