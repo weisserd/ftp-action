@@ -3,7 +3,7 @@ description: 'Upload files to an (S)FTP server using GitHub actions'
 author: 'Daniel Weisser'
 branding:
   icon: 'upload-cloud'
-  color: '#1CD1E3'
+  color: 'Orange'
 inputs:
   host:  
     description: 'Host name'
