@@ -28,10 +28,6 @@ async function run(): Promise<void> {
       protocol
     })
 
-    const srcFolders: string[] = []
-    getAllSubFolders(localPath, srcFolders)
-    srcFolders.push('.')
-
     core.debug(`Delete old folder: ${url.pathname}`)
     const exists = await client.exists(url.pathname)
     if (exists) {
@@ -40,49 +36,30 @@ async function run(): Promise<void> {
     await client.mkdir(url.pathname)
     core.debug(`Base dir created: ${url.pathname}`)
 
-    for (const srcFolder of srcFolders) {
-      core.debug(`localPath: ${localPath}`)
-      core.debug(`srcFolder: ${srcFolder}`)
-      core.debug(`url.pathname: ${url.pathname}`)
-      core.debug(
-        `path.relative(localPath, srcFolder): ${path.relative(
-          localPath,
-          srcFolder
-        )}`
-      )
+    copyFilesRecursively(localPath, url.pathname, client)
 
-      const newRemoteDir = path.join(
-        url.pathname,
-        path.relative(localPath, srcFolder)
-      )
-      core.debug(`Create new folder: ${newRemoteDir}`)
-      await client.mkdir(newRemoteDir)
-
-      // Copy files
-      for (const srcFile of readdirSync(srcFolder).filter(name =>
-        statSync(path.join(srcFolder, name)).isFile()
-      )) {
-        core.debug(`Copy file: ${srcFile}`)
-        await client.upload(
-          path.join(newRemoteDir, srcFile),
-          createReadStream(path.join(srcFolder, srcFile))
-        )
-      }
-    }
     await client.disconnect()
   } catch (error) {
     core.setFailed(error.message)
   }
 }
 
-// TODO Don't take baseFolder into account
-function getAllSubFolders(baseFolder: string, folderList: string[]): void {
-  const folders: string[] = readdirSync(baseFolder).filter(file =>
-    statSync(path.join(baseFolder, file)).isDirectory()
-  )
-  for (const folder of folders) {
-    folderList.push(path.join(baseFolder, folder))
-    getAllSubFolders(path.join(baseFolder, folder), folderList)
+async function copyFilesRecursively(
+  localPath: string,
+  targetPath: string,
+  client: Client
+): Promise<void> {
+  for (const srcEntry of readdirSync(localPath)) {
+    const curSource = path.join(localPath, srcEntry)
+    const curTarget = path.join(targetPath, srcEntry)
+    if (statSync(curSource).isDirectory()) {
+      core.debug(`Create dir and go into dir: ${curSource}/${curTarget}`)
+      await client.mkdir(curTarget)
+      copyFilesRecursively(curSource, curTarget, client)
+    } else {
+      core.debug(`Copy file: ${curSource} -> ${curTarget}`)
+      await client.upload(curSource, createReadStream(curTarget))
+    }
   }
 }
 

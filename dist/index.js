@@ -6923,9 +6923,6 @@ function run() {
                 password,
                 protocol
             });
-            const srcFolders = [];
-            getAllSubFolders(localPath, srcFolders);
-            srcFolders.push('.');
             core.debug(`Delete old folder: ${url.pathname}`);
             const exists = yield client.exists(url.pathname);
             if (exists) {
@@ -6933,20 +6930,7 @@ function run() {
             }
             yield client.mkdir(url.pathname);
             core.debug(`Base dir created: ${url.pathname}`);
-            for (const srcFolder of srcFolders) {
-                core.debug(`localPath: ${localPath}`);
-                core.debug(`srcFolder: ${srcFolder}`);
-                core.debug(`url.pathname: ${url.pathname}`);
-                core.debug(`path.relative(localPath, srcFolder): ${path.relative(localPath, srcFolder)}`);
-                const newRemoteDir = path.join(url.pathname, path.relative(localPath, srcFolder));
-                core.debug(`Create new folder: ${newRemoteDir}`);
-                yield client.mkdir(newRemoteDir);
-                // Copy files
-                for (const srcFile of fs_1.readdirSync(srcFolder).filter(name => fs_1.statSync(path.join(srcFolder, name)).isFile())) {
-                    core.debug(`Copy file: ${srcFile}`);
-                    yield client.upload(path.join(newRemoteDir, srcFile), fs_1.createReadStream(path.join(srcFolder, srcFile)));
-                }
-            }
+            copyFilesRecursively(localPath, url.pathname, client);
             yield client.disconnect();
         }
         catch (error) {
@@ -6954,13 +6938,22 @@ function run() {
         }
     });
 }
-// TODO Don't take baseFolder into account
-function getAllSubFolders(baseFolder, folderList) {
-    const folders = fs_1.readdirSync(baseFolder).filter(file => fs_1.statSync(path.join(baseFolder, file)).isDirectory());
-    for (const folder of folders) {
-        folderList.push(path.join(baseFolder, folder));
-        getAllSubFolders(path.join(baseFolder, folder), folderList);
-    }
+function copyFilesRecursively(localPath, targetPath, client) {
+    return __awaiter(this, void 0, void 0, function* () {
+        for (const srcEntry of fs_1.readdirSync(localPath)) {
+            const curSource = path.join(localPath, srcEntry);
+            const curTarget = path.join(targetPath, srcEntry);
+            if (fs_1.statSync(curSource).isDirectory()) {
+                core.debug(`Create dir and go into dir: ${curSource}/${curTarget}`);
+                yield client.mkdir(curTarget);
+                copyFilesRecursively(curSource, curTarget, client);
+            }
+            else {
+                core.debug(`Copy file: ${curSource} -> ${curTarget}`);
+                yield client.upload(curSource, fs_1.createReadStream(curTarget));
+            }
+        }
+    });
 }
 run();
 
