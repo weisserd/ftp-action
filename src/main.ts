@@ -30,6 +30,7 @@ async function run(): Promise<void> {
 
     const srcFolders: string[] = []
     getAllSubFolders(localPath, srcFolders)
+    srcFolders.push('.')
 
     core.debug(`Delete old folder: ${url.pathname}`)
     const exists = await client.exists(url.pathname)

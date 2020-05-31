@@ -6925,6 +6925,7 @@ function run() {
             });
             const srcFolders = [];
             getAllSubFolders(localPath, srcFolders);
+            srcFolders.push('.');
             core.debug(`Delete old folder: ${url.pathname}`);
             const exists = yield client.exists(url.pathname);
             if (exists) {
