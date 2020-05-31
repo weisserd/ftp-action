@@ -23,4 +23,4 @@ jobs:
         host: ${{ secrets.HOST }}
         user: ${{ secrets.USER }}
         password: ${{ secrets.PASSWORD }}
-        local_path: .git/
+        local_path: .
