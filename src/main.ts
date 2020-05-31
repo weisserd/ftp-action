@@ -37,8 +37,19 @@ async function run(): Promise<void> {
       await client.delete(url.pathname)
     }
     await client.mkdir(url.pathname)
+    core.debug(`Base dir created: ${url.pathname}`)
 
     for (const srcFolder of srcFolders) {
+      core.debug(`localPath: ${localPath}`)
+      core.debug(`srcFolder: ${srcFolder}`)
+      core.debug(`url.pathname: ${url.pathname}`)
+      core.debug(
+        `path.relative(localPath, srcFolder): ${path.relative(
+          localPath,
+          srcFolder
+        )}`
+      )
+
       const newRemoteDir = path.join(
         url.pathname,
         path.relative(localPath, srcFolder)

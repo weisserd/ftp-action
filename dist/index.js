@@ -6932,7 +6932,7 @@ function run() {
             }
             yield client.mkdir(url.pathname);
             for (const srcFolder of srcFolders) {
-                const newRemoteDir = path.join(url.pathname, srcFolder);
+                const newRemoteDir = path.join(url.pathname, path.relative(localPath, srcFolder));
                 core.debug(`Create new folder: ${newRemoteDir}`);
                 yield client.mkdir(newRemoteDir);
                 // Copy files
@@ -6948,6 +6948,7 @@ function run() {
         }
     });
 }
+// TODO Don't take baseFolder into account
 function getAllSubFolders(baseFolder, folderList) {
     const folders = fs_1.readdirSync(baseFolder).filter(file => fs_1.statSync(path.join(baseFolder, file)).isDirectory());
     for (const folder of folders) {
