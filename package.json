@@ -25,7 +25,7 @@
   "author": "Daniel Weisser",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.2.4",
+    "@actions/core": "^1.2.6",
     "qusly-core": "^2.5.2"
   },
   "devDependencies": {
